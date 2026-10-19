@@ -53,10 +53,11 @@ homes:
   bad-name: "<red>A home name is <white><rule></white>."
   no-such-home: "<red>No home called <white><name></white>. You have: <gray><list>"
   none-yet: "<gray>You have no homes yet — stand where you want one and use <white>/sethome</white>."
-  how-to-set-one: "<gray>Stand where you want it and type <white>/sethome</white>, or <white>/sethome</white> and a name for it."
 
   icon-set: "<green><white><name></white> shows as <white><icon></white> now."
   ask-name: "<gray>A new name for <white><name></white>? Type it, or <white>cancel</white>."
+  ask-new-name: "<gray>What should the new home be called? It is set where you stand when you answer. Type a name, or <white>cancel</white>."
+  no-new-home: "<gray>No new home then."
   busy: "<yellow>Something else is already waiting for an answer from you."
   only-a-player: "<red>A home belongs to a player, so this has to be run in game."
 

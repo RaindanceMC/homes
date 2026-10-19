@@ -20,7 +20,7 @@
 
     <!-- This repository's own versions: bump them here. CI publishes a new version on the next push to master. -->
     <properties>
-        <homes-module.version>2.8.3</homes-module.version>
+        <homes-module.version>2.9.0</homes-module.version>
     </properties>
 
     <modules>

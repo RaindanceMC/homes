@@ -7,6 +7,7 @@ import de.raindancer.core.ui.menu.Menu;
 import de.raindancer.core.ui.menu.PaginatedMenu;
 import de.raindancer.modules.homes.HomeServices;
 import de.raindancer.modules.homes.model.Home;
+import de.raindancer.modules.homes.model.HomeSlot;
 import de.raindancer.modules.homes.service.HomeTravelService;
 import de.raindancer.modules.homes.util.HomeIcons;
 import net.kyori.adventure.text.Component;
@@ -29,9 +30,11 @@ import java.util.UUID;
  * for them. The list is the one answer that is right for everybody, and the home called {@code home} is
  * one click away on it.
  */
-public final class HomeListMenu extends PaginatedMenu<Home> implements IHomeScreen {
+public final class HomeListMenu extends PaginatedMenu<HomeSlot<Home>> implements IHomeScreen {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
+
+    private static final java.time.Duration TO_ANSWER = java.time.Duration.ofSeconds(60);
 
     private final HomeServices services;
 
@@ -52,33 +55,41 @@ public final class HomeListMenu extends PaginatedMenu<Home> implements IHomeScre
     }
 
     @Override
-    protected List<Home> entries() {
-        return services.homes().of(viewer.getUniqueId());
+    protected List<HomeSlot<Home>> entries() {
+        return HomeSlot.list(services.homes().of(viewer.getUniqueId()), services.keeping().limitFor(viewer));
     }
 
     /**
-     * Nobody has any homes to begin with, so this is the first thing a new player sees.
-     *
-     * <p>It says what to do rather than only that there is nothing, and the button does it — a list
-     * that names the way out has to be able to act on it, or the sentence is decoration.
+     * Only seen with a limit of zero: anybody allowed a home sees their free slots as cobwebs instead.
+     * The button does what the sentence says — buys a slot where this server sells them.
      */
     @Override
     protected ItemStack emptyIcon() {
-        return Icons.of(Material.COBWEB, "<gray>You have no homes yet",
-                "<gray>Stand where you want one and use",
-                "<white>/sethome<gray>, or click here to be told how.",
-                "",
-                "<dark_gray>You may have " + services.keeping().describeLimitFor(viewer) + ".");
+        boolean sold = services.slots().whyNot(viewer.getUniqueId()).isEmpty();
+        return Icons.of(Material.BARRIER, "<gray>No home slots",
+                "<gray>You may not have a home right now.",
+                sold ? "<yellow>Click<gray> to buy a slot." : "<gray>Staff can give you one.");
     }
 
     @Override
     protected void emptyAction(InventoryClickEvent event) {
+        if (services.slots().whyNot(viewer.getUniqueId()).isEmpty()) {
+            new SlotOfferScreen(services, viewer, this, false, null).open();
+            return;
+        }
         viewer.closeInventory();
-        services.messages().send(viewer, "homes.how-to-set-one");
+        services.messages().send(viewer, "homes.switched-off");
     }
 
     @Override
-    protected ItemStack icon(Home home) {
+    protected ItemStack icon(HomeSlot<Home> slot) {
+        if (slot.isFree()) {
+            return Icons.of(Material.COBWEB, "<gray>Free home slot",
+                    "<gray>Room for one more home.",
+                    "",
+                    "<yellow>Click<gray> to set a home where you stand.");
+        }
+        Home home = slot.home();
         List<String> lore = new ArrayList<>();
         if (home.isReachable()) {
             lore.add("<dark_gray>" + home.world() + " " + home.coordinates());
@@ -115,7 +126,12 @@ public final class HomeListMenu extends PaginatedMenu<Home> implements IHomeScre
      * easier gesture, and the delete now lives behind a page of its own.
      */
     @Override
-    protected void onClick(Home home, InventoryClickEvent event) {
+    protected void onClick(HomeSlot<Home> slot, InventoryClickEvent event) {
+        if (slot.isFree()) {
+            askForANewHome();
+            return;
+        }
+        Home home = slot.home();
         if (event.isRightClick()) {
             new HomeEditMenu(services, viewer, this, home.name()).open();
             return;
@@ -124,6 +140,27 @@ public final class HomeListMenu extends PaginatedMenu<Home> implements IHomeScre
         // is a window the player has to shut before they can be seen to have moved.
         viewer.closeInventory();
         services.travelling().go(viewer, home);
+    }
+
+    /** A free slot clicked: a name in chat, then the home is set where they stand by then — as /sethome does. */
+    private void askForANewHome() {
+        viewer.closeInventory();
+        boolean asking = services.core().prompts().ask(viewer.getUniqueId(), "homes", TO_ANSWER,
+                answer -> {
+                    if (answer != null && answer.equalsIgnoreCase("cancel")) {
+                        services.messages().send(viewer, "homes.no-new-home");
+                        open();
+                        return;
+                    }
+                    services.keeping().set(viewer, answer).ifPresent(home -> open());
+                },
+                this::open);
+        if (!asking) {
+            services.messages().send(viewer, "homes.busy");
+            open();
+            return;
+        }
+        services.messages().send(viewer, "homes.ask-new-name");
     }
 
     /** The counter, which is the one thing on the page that is not a home. */
