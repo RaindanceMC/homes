@@ -48,7 +48,8 @@
              2.8.0: a trip to a home on another server no longer fakes a teleport in place (no bogus /back point); the fee is kept and the wait started only once the hop really moved you, otherwise refunded. -->
         <!-- 2.8.3: its cooldown follows the player across the network. -->
         <!-- 2.9.0: /home shows every free home slot as a cobweb; clicking one asks for a name and sets the home where you stand. -->
-        <plugin.version>2.9.0</plugin.version>
+        <!-- 2.9.1: buying a home slot reads and writes the database off the server thread. -->
+        <plugin.version>2.9.1</plugin.version>
     </properties>
 
     <dependencies>

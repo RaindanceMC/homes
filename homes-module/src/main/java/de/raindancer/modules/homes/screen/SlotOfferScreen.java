@@ -23,11 +23,7 @@ public final class SlotOfferScreen extends ConfirmMenu implements IHomeScreen {
                         "<gray>You may have " + services.keeping().describeLimitFor(viewer) + " now."
                                 + (thenSet ? " The home is then set where you stand." : "")),
                 "<dark_gray>The price is taken when you click Yes.",
-                () -> {
-                    if (services.slots().buy(viewer) && thenSet) {
-                        services.keeping().set(viewer, homeName);
-                    }
-                });
+                () -> services.slots().buy(viewer, thenSet ? () -> services.keeping().set(viewer, homeName) : null));
     }
 
     @Override

@@ -151,4 +151,22 @@ class HomeSlotServiceTest {
         assertThat(service.buy(player)).isFalse();
         assertThat(bank.balance(id)).isEqualTo(Fees.amount("100"));
     }
+
+    @Test
+    @DisplayName("from the menu the purchase runs where it is handed, and the home is set only once it is bought")
+    void offThread() {
+        FakeEconomy.install().give(id, "100");
+        HomeSlotService service = service(priced("10", 0, 0));
+        java.util.List<Runnable> queued = new java.util.ArrayList<>();
+        service.runOn(queued::add, (who, task) -> task.run());
+        boolean[] set = new boolean[1];
+
+        service.buy(player, () -> set[0] = true);
+
+        assertThat(set[0]).isFalse();
+        assertThat(service.bought(id)).isZero();
+        queued.forEach(Runnable::run);
+        assertThat(service.bought(id)).isEqualTo(1);
+        assertThat(set[0]).isTrue();
+    }
 }

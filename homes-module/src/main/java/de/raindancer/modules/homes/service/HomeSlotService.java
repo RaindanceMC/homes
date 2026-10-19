@@ -69,9 +69,38 @@ public final class HomeSlotService implements IHomeService {
         return Fees.format(slots.quote(player, settings.slotTerms()));
     }
 
-    /** Buys one slot. @return whether it was bought; a refusal has been said */
+    /**
+     * Where a purchase runs (it reads and writes the database) and where its answer comes back to the player.
+     * Inline for tests; the module hands it off the server's threads and back onto the player's.
+     */
+    public void runOn(java.util.concurrent.Executor offThread,
+                      java.util.function.BiConsumer<Player, Runnable> onPlayer) {
+        this.offThread = offThread;
+        this.onPlayer = onPlayer;
+    }
+
+    private volatile java.util.concurrent.Executor offThread = Runnable::run;
+    private volatile java.util.function.BiConsumer<Player, Runnable> onPlayer = (player, task) -> task.run();
+
+    /** Buys one slot off the server's thread; {@code then} runs on the player's thread once it is bought. */
+    public void buy(Player buyer, Runnable then) {
+        slots.buyOffThread(buyer.getUniqueId(), settings.slotTerms(), offThread)
+                .whenComplete((bought, failed) -> onPlayer.accept(buyer, () -> {
+                    if (failed != null) {
+                        messages.send(buyer, "homes.slot.not-saved");
+                    } else if (answer(buyer, bought) && then != null) {
+                        then.run();
+                    }
+                }));
+    }
+
+    /** Buys one slot here and now — database work, so never on a server thread. @return whether it was bought */
     public boolean buy(Player buyer) {
-        BuyableSlots.Purchase bought = slots.buy(buyer.getUniqueId(), settings.slotTerms());
+        return answer(buyer, slots.buy(buyer.getUniqueId(), settings.slotTerms()));
+    }
+
+    /** Says how it went. @return whether it was bought */
+    private boolean answer(Player buyer, BuyableSlots.Purchase bought) {
         switch (bought.outcome()) {
             case BOUGHT -> {
                 messages.send(buyer, "homes.slot.bought", "price", Fees.format(bought.paid()), "count", bought.owned());

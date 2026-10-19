@@ -59,7 +59,7 @@ import java.util.Optional;
  */
 public final class HomeModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.9.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.9.1")
             .describedAs("Somewhere of your own to come back to: name it, set it, go to it, and pick "
                     + "from a menu of them")
             .by("Raindancer118");
@@ -173,6 +173,8 @@ public final class HomeModule implements FlexModule {
                 HomeSlotService.SOURCE, "Extra home slot");
         boughtSlots.load();
         slots = new HomeSlotService(boughtSlots, context.core().messages(), settings.current());
+        slots.runOn(task -> de.raindancer.core.platform.util.Scheduling.async(context.plugin(), task),
+                (player, task) -> de.raindancer.core.platform.util.Scheduling.entity(context.plugin(), player, task));
         keeping = new HomeKeepingService(homes, limits, names, context.core().messages(), slots,
                 settings.current());
 
