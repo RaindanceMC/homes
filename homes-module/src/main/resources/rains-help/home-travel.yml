@@ -1,0 +1,60 @@
+id: home-travel
+title: Going home — the rules
+summary: Waiting, cooldowns, other worlds, safe landing, what you bring, what it costs — and who may skip it.
+intro: |
+  Teleporting is a privilege, not a panic button. Here is what happens between "/home" and the front door.
+icon: ENDER_PEARL
+category: Getting around
+order: 11
+module: homes
+aliases: [warmup, cooldown, teleport, tp-home, standstill, homewait]
+keywords: [wait, stand still, move, damage, cancel, cross world, nether, safe, lead, pet, boat, price, fee, sound, bypass]
+related: [homes]
+sections:
+  - question: Why do I have to stand still?
+    title: The wait
+    when: homes:homes.warmup-seconds > 0
+    text: |
+      Going home takes you after {setting:homes:homes.warmup-seconds|seconds}, so that running out of a fight through a home costs something.
+      {if:homes:homes.cancel-on-move}Leaving the block you started on cancels it — turning and looking around is fine.{/if}
+      {if:homes:homes.cancel-on-damage}Taking damage cancels it as well.{/if}
+      You can only be on one trip at a time.
+  - question: Is there a wait before I go?
+    title: No wait
+    when: "!homes:homes.warmup-seconds"
+    text: |
+      No — {cmd:/home <name>} takes you at once.
+  - question: Why can't I go home again yet?
+    title: The cooldown
+    when: homes:homes.cooldown-seconds > 0
+    text: |
+      After a trip you wait {setting:homes:homes.cooldown-seconds|seconds} before the next one. The count starts when you <i>arrive</i>, so a trip you were knocked out of costs you nothing.
+  - question: Can I go home to another world?
+    title: Other worlds
+    text: |
+      {if:homes:homes.allow-cross-world}Yes — a home in the nether or the end works from anywhere. A home on another server of the network works too: you wait, and are sent there.{else}Not from another world: a home in the nether is only reachable from the nether on this server.{/if}
+      If a home's world is not loaded right now, I say so and you try later; the home is not deleted.
+  - question: Where will I land?
+    title: Landing safely
+    when: homes:homes.safe-arrival
+    text: |
+      Arrival looks for solid ground near the home instead of dropping you exactly where it was set — a floor since mined out, or a home set on a boat, is otherwise a fall. If there is truly nowhere safe, I refuse and tell you instead of dropping you into lava.
+  - question: Can I bring my pet?
+    title: Bringing things
+    when: homes:homes.bring-what-you-lead
+    text: |
+      Yes: the animal on your lead, the boat you are towing and whatever rides with you come home too. Never another player, and never somebody else's animal.
+  - question: What does going home cost?
+    title: The price
+    when: homes:homes.teleport-price
+    text: |
+      A trip costs {setting:homes:homes.teleport-price|money}, taken when it starts and paid back if you never get there (cancelled, refused or failed). If you cannot pay, you stay put.
+  - question: Is it quiet?
+    title: Sounds
+    text: |
+      {if:homes:homes.play-sound}A trip home has the same sounds and particles as other teleports — or whatever you picked in your cosmetics.{else}Home trips are silent on this server.{/if}
+  - question: Who may skip the wait or price?
+    title: Skipping
+    when: "@perm:homes.bypass.warmup || @perm:homes.bypass.cooldown || @perm:homes.bypass.fee"
+    text: |
+      Those holding <white>homes.bypass.warmup</white>, <white>homes.bypass.cooldown</white> or <white>homes.bypass.fee</white> skip that part. Operators skip them only where the setting "operators skip the waits" is on — currently {setting:homes:homes.operators-bypass|onoff}, off by default so that admins test what players actually experience.

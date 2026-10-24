@@ -1,0 +1,57 @@
+id: homes
+title: Homes
+summary: Save places with /sethome, return with /home — names, the menu, limits and how to get more.
+intro: |
+  A home is somewhere of your own to come back to, which on this server is something you will need after the first creeper. Stand where you want it, and tell me.
+icon: RED_BED
+category: Getting around
+order: 10
+module: homes
+aliases: [home, sethome, delhome, removehome, homes, bed]
+keywords: [teleport, tp, save, set, delete, rename, icon, limit, slots, buy, menu]
+commands: [home, sethome, delhome]
+related: [home-travel]
+sections:
+  - question: How do I set a home?
+    title: Setting a home
+    text: |
+      Stand where you want it and type {cmd:/sethome <name>}. Without a name it is called <white>home</white>. Names are lower case letters, digits, <white>-</white> and <white>_</white>, up to 16 characters.
+      Setting a name you already have <i>moves</i> that home here — and that never counts against your limit, so a badly placed home is always fixable.
+  - question: How do I go home?
+    title: Going home
+    text: |
+      {cmd:/home <name>} takes you there — leave the name out and you get the list. Click a home in the list to go, or right-click it to rename it, change the block it shows as, or delete it. How the trip works — waiting, cooldowns, other worlds — is on the page {topic:home-travel}.
+  - question: How do I see all my homes?
+    title: The home list
+    text: |
+      {run:/home} opens your homes as a menu: one block per home with its world and coordinates (and the server, if it is on another one). Empty slots show where room is left. The red bed in the middle tells you how many you have used.
+  - question: How many homes can I have?
+    title: How many
+    text: |
+      {if:homes:homes.max > 0}Everybody may have {setting:homes:homes.max|count} home(s) to start with; ranks and permissions can give some players more, but nothing lowers it.{else}Nobody has a home by default on this server — only players who were granted some, or who buy slots, may set any.{/if}
+      The red bed in the list shows your own number. If you are over a limit that was lowered since, you keep what you have and can still move your homes; you just cannot add new ones.
+  - question: Can I buy more home slots?
+    title: Extra slots
+    when: homes:homes.slot-buying && homes:homes.slot-price
+    text: |
+      Yes. A slot costs {setting:homes:homes.slot-price|money}{if:homes:homes.slot-price-growth-percent > 0}, and each further slot costs {setting:homes:homes.slot-price-growth-percent|percent} more than the one before{/if}. Each one is yours for good and sits on top of your limit.
+      {if:homes:homes.most-bought-slots > 0}You may buy at most {setting:homes:homes.most-bought-slots|count}.{else}There is no ceiling on how many you may buy.{/if}
+      Buy from the emerald in the home list. And if you try to set a home while full, I offer you a slot right then — and set the home when you buy it.
+  - question: How do I rename or re-icon a home?
+    title: Rename & icon
+    text: |
+      Right-click the home in {run:/home}. <white>Go here</white>, <white>Rename it</white> (type the new name in chat, or <i>cancel</i>), <white>What it looks like</white> (pick any block as its picture; right-click to go back to the world's own) and <white>Delete this home</white> (you are asked first).
+  - question: How do I delete a home?
+    title: Deleting
+    text: |
+      {cmd:/delhome <name>} — or Delete in the home's menu, with a confirmation. The place, its name and its block go; you can set another anywhere, but not get this one back.
+  - question: Why does it say "no home called …"?
+    title: Unknown home
+    text: |
+      The name is wrong — it lists the ones you have. Names are lower case, so <white>Base</white> and <white>base</white> are the same home. Tab completion fills them in as you type.
+  - question: What can staff change?
+    title: Staff settings
+    permission: rainscore.settings
+    text: |
+      {run:/settings} has the pages Homes, Going home and Keeping them. Keeping: homes per player {setting:homes:homes.max|count}, slot buying {setting:homes:homes.slot-buying|onoff} at {setting:homes:homes.slot-price|money}, growth {setting:homes:homes.slot-price-growth-percent|percent}, ceiling {setting:homes:homes.most-bought-slots|count} (0 = none), operators skip waits {setting:homes:homes.operators-bypass|onoff}.
+      More homes for one player: give the permission <white>homes.limit.N</white> (for example <white>homes.limit.10</white>; the highest counts), or <white>homes.unlimited</white> for no limit at all. Permission <white>homes.use</white> lets players use the commands.
