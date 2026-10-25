@@ -84,6 +84,11 @@ public final class HomeCatalogue {
         return places.named(owner, KIND, wanted).map(Home::new);
     }
 
+    /** Every home of everybody, for the screens that rank them. */
+    public List<Home> all() {
+        return places.ofKind(KIND).stream().map(Home::new).toList();
+    }
+
     public int count(UUID owner) {
         return owner == null ? 0 : places.count(owner, KIND);
     }

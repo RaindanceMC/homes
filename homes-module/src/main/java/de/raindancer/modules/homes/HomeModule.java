@@ -59,7 +59,7 @@ import java.util.Optional;
  */
 public final class HomeModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.10.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.11.0")
             .describedAs("Somewhere of your own to come back to: name it, set it, go to it, and pick "
                     + "from a menu of them")
             .by("Raindancer118");
@@ -163,6 +163,18 @@ public final class HomeModule implements FlexModule {
         // behind.
         SetHomePluginFile.locate(pluginsFolder, context.dataFolder())
                 .ifPresent(setHomeFile -> homes.importSetHomePlugin(setHomeFile, log));
+
+        // Screens for /screen — Core 2.10.0; on an older Core there are simply none.
+        try {
+            var screens = context.core().screens();
+            if (screens != null) {
+                new de.raindancer.modules.homes.store.HomeScreens(homes,
+                        id -> context.core().identities().nameOf(id).orElse(null)).register(screens, context.plugin());
+                context.closeWith(() -> de.raindancer.modules.homes.store.HomeScreens.KINDS.forEach(screens::unregister));
+            }
+        } catch (LinkageError olderCore) {
+            context.log().info("RainsCore is older than 2.10.0: no home screens until it is updated.");
+        }
 
         travel = new Travel(context.plugin(), context.core().safety(), context.core().audit());
         travelling = new HomeTravelService(travel, context.core().messages(), context.core().effects(),
