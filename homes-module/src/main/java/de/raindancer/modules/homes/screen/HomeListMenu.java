@@ -142,25 +142,14 @@ public final class HomeListMenu extends PaginatedMenu<HomeSlot<Home>> implements
         services.travelling().go(viewer, home);
     }
 
-    /** A free slot clicked: a name in chat, then the home is set where they stand by then — as /sethome does. */
+    /** A free slot clicked: a name in the game's dialog, then the home is set where they stand — as /sethome does. */
     private void askForANewHome() {
-        viewer.closeInventory();
-        boolean asking = services.core().prompts().ask(viewer.getUniqueId(), "homes", TO_ANSWER,
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "Name the new home", "", de.raindancer.core.ui.prompt.Parsers.text(24),
                 answer -> {
-                    if (answer != null && answer.equalsIgnoreCase("cancel")) {
-                        services.messages().send(viewer, "homes.no-new-home");
-                        open();
-                        return;
-                    }
-                    services.keeping().set(viewer, answer).ifPresent(home -> open());
+                    services.keeping().set(viewer, answer);
+                    open();
                 },
                 this::open);
-        if (!asking) {
-            services.messages().send(viewer, "homes.busy");
-            open();
-            return;
-        }
-        services.messages().send(viewer, "homes.ask-new-name");
     }
 
     /** The counter, which is the one thing on the page that is not a home. */

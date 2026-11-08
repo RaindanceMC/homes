@@ -50,7 +50,7 @@
         <!-- 2.9.0: /home shows every free home slot as a cobweb; clicking one asks for a name and sets the home where you stand. -->
         <!-- 2.9.1: buying a home slot reads and writes the database off the server thread. -->
         <!-- 2.11.0: screens for /screen (RainsCore 2.10.1). -->
-        <plugin.version>2.11.0</plugin.version>
+        <plugin.version>2.12.0</plugin.version>
     </properties>
 
     <dependencies>

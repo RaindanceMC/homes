@@ -11,7 +11,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -27,8 +26,6 @@ public final class HomeEditMenu extends Menu implements IHomeScreen {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** How long somebody has to type a new name before the question is dropped. */
-    private static final Duration TO_ANSWER = Duration.ofSeconds(60);
 
     private final HomeServices services;
     private final String name;
@@ -135,35 +132,18 @@ public final class HomeEditMenu extends Menu implements IHomeScreen {
     /**
      * Asks in chat, which is the one thing a menu genuinely cannot ask.
      *
-     * <p>A name has nothing to enumerate, so there is no chooser to open. Everything with a set of
-     * answers — the block it shows as — is a chooser, per the module's own grammar.
+     * <p>A name has nothing to enumerate, so there is no chooser to open; it is typed in the game's own dialog,
+     * with the current name filled in. Everything with a set of answers — the block it shows as — is a chooser.
      */
     private void askForANewName() {
-        viewer.closeInventory();
-        boolean asking = services.core().prompts().ask(viewer.getUniqueId(), "homes", TO_ANSWER,
-                answer -> {
-                    if (answer != null && answer.equalsIgnoreCase("cancel")) {
-                        services.messages().send(viewer, "homes.left-as-it-is");
-                        open();
-                        return;
-                    }
-                    services.keeping().rename(viewer, name, answer)
-                            .ifPresentOrElse(
-                                    // Rebuilt rather than reopened: this page is about a name that has
-                                    // just changed, and its own title would be the old one.
-                                    renamed -> new HomeEditMenu(services, viewer, parent(),
-                                            renamed.name()).open(),
-                                    this::open);
-                },
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "A new name for " + name, name, de.raindancer.core.ui.prompt.Parsers.text(24),
+                answer -> services.keeping().rename(viewer, name, answer)
+                        .ifPresentOrElse(
+                                // Rebuilt rather than reopened: this page is about a name that has
+                                // just changed, and its own title would be the old one.
+                                renamed -> new HomeEditMenu(services, viewer, parent(), renamed.name()).open(),
+                                this::open),
                 this::open);
-        if (!asking) {
-            // Somebody else is already asking them something. Saying so beats overwriting it, which
-            // would leave the other plugin waiting for an answer it never gets.
-            services.messages().send(viewer, "homes.busy");
-            open();
-            return;
-        }
-        services.messages().send(viewer, "homes.ask-name", "name", name);
     }
 
     @Override
