@@ -1,8 +1,8 @@
 id: homes
 title: Homes
-summary: Save places with /sethome, return with /home — names, the menu, limits and how to get more.
+summary: Save places with /sethome, return with /home. Names, the menu, limits and how to get more.
 intro: |
-  A home is somewhere of your own to come back to, which on this server is something you will need after the first creeper. Stand where you want it, and tell me.
+  A home is somewhere of your own to come back to. Stand where you want it and save it.
 icon: RED_BED
 category: Getting around
 order: 10
@@ -16,11 +16,11 @@ sections:
     title: Setting a home
     text: |
       Stand where you want it and type {cmd:/sethome <name>}. Without a name it is called <white>home</white>. Names are lower case letters, digits, <white>-</white> and <white>_</white>, up to 16 characters.
-      Setting a name you already have <i>moves</i> that home here — and that never counts against your limit, so a badly placed home is always fixable.
+      Setting a name you already have <i>moves</i> that home here. That never counts against your limit, so a badly placed home is always fixable.
   - question: How do I go home?
     title: Going home
     text: |
-      {cmd:/home <name>} takes you there — leave the name out and you get the list. Click a home in the list to go, or right-click it to rename it, change the block it shows as, or delete it. How the trip works — waiting, cooldowns, other worlds — is on the page {topic:home-travel}.
+      {cmd:/home <name>} takes you there. Leave the name out and you get the list. Click a home in the list to go, or right-click it to rename it, change the block it shows as, or delete it. The page {topic:home-travel} explains how the trip works: waiting, cooldowns and other worlds.
   - question: How do I see all my homes?
     title: The home list
     text: |
@@ -28,7 +28,7 @@ sections:
   - question: How many homes can I have?
     title: How many
     text: |
-      {if:homes:homes.max > 0}Everybody may have {setting:homes:homes.max|count} home(s) to start with; ranks and permissions can give some players more, but nothing lowers it.{else}Nobody has a home by default on this server — only players who were granted some, or who buy slots, may set any.{/if}
+      {if:homes:homes.max > 0}Everybody may have {setting:homes:homes.max|count} home(s) to start with; ranks and permissions can give some players more, but nothing lowers it.{else}Nobody has a home by default on this server. Only players who were granted some, or who buy slots, may set any.{/if}
       The red bed in the list shows your own number. If you are over a limit that was lowered since, you keep what you have and can still move your homes; you just cannot add new ones.
   - question: Can I buy more home slots?
     title: Extra slots
@@ -36,7 +36,7 @@ sections:
     text: |
       Yes. A slot costs {setting:homes:homes.slot-price|money}{if:homes:homes.slot-price-growth-percent > 0}, and each further slot costs {setting:homes:homes.slot-price-growth-percent|percent} more than the one before{/if}. Each one is yours for good and sits on top of your limit.
       {if:homes:homes.most-bought-slots > 0}You may buy at most {setting:homes:homes.most-bought-slots|count}.{else}There is no ceiling on how many you may buy.{/if}
-      Buy from the emerald in the home list. And if you try to set a home while full, I offer you a slot right then — and set the home when you buy it.
+      Buy from the emerald in the home list. If you try to set a home while full, you are offered a slot, and the home is set when you buy it.
   - question: How do I rename or re-icon a home?
     title: Rename & icon
     text: |
@@ -44,11 +44,11 @@ sections:
   - question: How do I delete a home?
     title: Deleting
     text: |
-      {cmd:/delhome <name>} — or Delete in the home's menu, with a confirmation. The place, its name and its block go; you can set another anywhere, but not get this one back.
+      {cmd:/delhome <name>} or Delete in the home's menu, with a confirmation. The place, its name and its block are gone. You can set a new home anywhere, but you cannot get this one back.
   - question: Why does it say "no home called …"?
     title: Unknown home
     text: |
-      The name is wrong — it lists the ones you have. Names are lower case, so <white>Base</white> and <white>base</white> are the same home. Tab completion fills them in as you type.
+      The name is wrong. The message lists the homes you have. Names are lower case, so <white>Base</white> and <white>base</white> are the same home. Tab completion fills them in as you type.
   - question: What can staff change?
     title: Staff settings
     permission: rainscore.settings
