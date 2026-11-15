@@ -133,8 +133,6 @@ public final class HomeModule implements FlexModule {
         context.core().messages().defineFrom(
                 HomeModule.class.getResourceAsStream("messages.yml"),
                 context.chat().brand()::chatPrefix);
-        // The same lines said plainly, for a server whose Message tone is SERIOUS.
-        context.core().messages().seriousFrom(HomeModule.class.getResourceAsStream("messages-serious.yml"));
 
         // Before anything asks. An unregistered permission resolves to "operators only", which would
         // refuse homes to every ordinary player on the server.
