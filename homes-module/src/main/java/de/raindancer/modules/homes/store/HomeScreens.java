@@ -42,7 +42,7 @@ public final class HomeScreens {
         var mine = homes.of(viewer.id());
         StringBuilder text = new StringBuilder("<gold><bold>Your homes</bold></gold>");
         if (mine.isEmpty()) {
-            return MINI.deserialize(text + "\n<gray>None yet — <white>/sethome");
+            return MINI.deserialize(text + "\n<gray>None yet. Use <white>/sethome");
         }
         text.append("\n<gray>Homes <white>").append(mine.size());
         rule.yours(mine, YOURS_SHOWN).forEach(line -> text.append('\n').append(line));

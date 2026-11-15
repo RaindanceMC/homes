@@ -233,8 +233,8 @@ public final class HomeCatalogue {
     public int importSetHomePlugin(Path homesFile, LogChannel log) {
         if (!isEmpty()) {
             if (log != null) {
-                log.info("Not importing {} — RainsHomes already has homes of its own, and those are "
-                                + "the ones kept. The file was left where it is.",
+                log.info("Not importing {}. RainsHomes already has homes of its own, and those are "
+                                + "kept. The file was left where it is.",
                         homesFile == null ? SetHomePluginFile.FILE_NAME : homesFile.getFileName());
             }
             return 0;
@@ -254,8 +254,8 @@ public final class HomeCatalogue {
                 // rather than skipped quietly: the second one is about to become unreachable, and the
                 // owner is the only person who can decide which of the two they wanted.
                 if (log != null) {
-                    log.warn("{} already has a home called {} — the one at {} {} was left in {} and "
-                                    + "not brought across.",
+                    log.warn("{} already has a home called {}. The one at {} {} was left in {} and "
+                                    + "not imported.",
                             entry.ownerName().isBlank() ? entry.owner() : entry.ownerName(),
                             entry.name(), entry.world(),
                             Math.round(entry.x()) + ", " + Math.round(entry.y()) + ", "
@@ -300,7 +300,7 @@ public final class HomeCatalogue {
         try {
             Files.move(homesFile, aside, StandardCopyOption.REPLACE_EXISTING);
             if (log != null) {
-                log.info("{} is now {} — kept, not deleted, in case this has to be undone.",
+                log.info("{} is now {}. It is kept, not deleted, in case this has to be undone.",
                         homesFile.getFileName(), aside.getFileName());
             }
         } catch (Exception couldNotMove) {
@@ -308,7 +308,7 @@ public final class HomeCatalogue {
             // anything deleted in between would come back.
             if (log != null) {
                 log.warn("Could not set {} aside ({}). Homes were imported, but that file will be "
-                                + "read again on the next start — move it by hand.",
+                                + "read again on the next start. Move it by hand.",
                         homesFile, couldNotMove.toString());
             }
         }

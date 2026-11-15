@@ -98,13 +98,13 @@ final class SetHomeFiles {
         try {
             Files.move(file, aside, StandardCopyOption.REPLACE_EXISTING);
             if (log != null) {
-                log.info("{} is now {} — kept, not deleted, in case this has to be undone.",
+                log.info("{} is now {}. It is kept, not deleted, in case this has to be undone.",
                         file.getFileName(), aside.getFileName());
             }
         } catch (Exception couldNotMove) {
             if (log != null) {
-                log.warn("Could not set {} aside ({}). It will be read again on the next start — "
-                                + "move it by hand.",
+                log.warn("Could not set {} aside ({}). It will be read again on the next start. "
+                                + "Move it by hand.",
                         file, couldNotMove.toString());
             }
         }

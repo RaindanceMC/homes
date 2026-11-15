@@ -38,12 +38,12 @@ public final class HomeCommands {
                                 "Go to one of your homes, or see the list of them",
                                 new HomeCommand(HomeCommands::require))
                         .aliased("homes")
-                        .taking("<name> — go to that one", "with no name — the list")
+                        .taking("<name>: go to that one", "with no name: the list")
                         .needing("rainshomes.home"),
                 ModuleCommand.of("sethome",
                                 "Save where you are standing as a home",
                                 new SetHomeCommand(HomeCommands::require))
-                        .taking("<name> — or nothing, for your first")
+                        .taking("<name>: or nothing, for your first")
                         .needing("rainshomes.home"),
                 ModuleCommand.of("delhome",
                                 "Forget one of your homes",

@@ -39,27 +39,27 @@ public record HomeSettings(
 
         @In("homes/travelling") @Title("A home may be in another world")
         @Describe("Whether going home may cross a world boundary. Off, a home in the nether is only "
-                + "reachable from the nether — which is one way to keep a mining world from being a "
-                + "free trip back to spawn.")
+                + "reachable from the nether. That stops a mining world from being a free trip back "
+                + "to spawn.")
         @Key("homes.allow-cross-world")
         boolean allowCrossWorld,
 
         @In("homes/travelling") @Title("Stand still for") @Range(min = 0, max = 60)
         @Describe("Seconds before going home takes somebody, so that running out of a fight through "
-                + "a home costs something. Zero sends them at once.")
+                + "a home has a cost. Zero sends them at once.")
         @Key("homes.warmup-seconds")
         int warmupSeconds,
 
         @In("homes/travelling") @Title("Moving cancels the wait")
         @Describe("Whether leaving the block you started on gives up on the teleport. Turning and "
-                + "looking around never counts — only leaving the block.")
+                + "looking around never counts, only leaving the block.")
         @Key("homes.cancel-on-move")
         boolean cancelOnMove,
 
         @In("homes/travelling") @Title("Being hurt cancels the wait")
-        @Describe("Whether taking damage gives up on the teleport. Worth thinking about together "
-                + "with the wait above: mobs where people stand and a five-second wait is a home "
-                + "nobody can reach, and that gets reported as 'homes are broken'.")
+        @Describe("Whether taking damage gives up on the teleport. Consider it together "
+                + "with the wait above: with mobs where people stand and a five-second wait, nobody "
+                + "can reach their home, and that gets reported as 'homes are broken'.")
         @Key("homes.cancel-on-damage")
         boolean cancelOnDamage,
 
@@ -71,8 +71,8 @@ public record HomeSettings(
 
         @In("homes/keeping") @Title("Operators skip the waits")
         @Describe("Whether being an operator counts as holding the bypass permissions and the "
-                + "unlimited one, without being granted them. Off by default, and deliberately: an "
-                + "admin who silently bypasses a feature is the one person who cannot test it.")
+                + "unlimited one, without being granted them. Off by default, so that admins "
+                + "see what players see and can test the feature.")
         @Key("homes.operators-bypass")
         boolean operatorsBypass,
 
@@ -90,7 +90,7 @@ public record HomeSettings(
         boolean bringWhatYouLead,
 
         @In("homes/travelling") @Title("Teleport sounds and particles")
-        @Describe("Whether a trip home has the sounds and waiting particles every other teleport has — "
+        @Describe("Whether a trip home has the sounds and waiting particles every other teleport has: "
                 + "Core's teleport cues, or what the traveller picked in /cosmetics. Off: home trips are quiet.")
         @Key("homes.play-sound")
         boolean playSound,
