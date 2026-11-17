@@ -59,7 +59,7 @@ import java.util.Optional;
  */
 public final class HomeModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.12.1")
+    private static final ModuleInfo INFO = ModuleInfo.of("homes", "Homes", "2.13.0")
             .describedAs("Somewhere of your own to come back to: name it, set it, go to it, and pick "
                     + "from a menu of them")
             .by("Raindancer118");
@@ -208,6 +208,17 @@ public final class HomeModule implements FlexModule {
         // the owner's decision, so it is read at registration.
         context.listener(new TravelListener(travel, settings.current().cancelOnDamage()));
         context.listener(new HomeSessionListener(services));
+
+        // Homes are a door on /travel (Core 2.103.0).
+        try {
+            var door = de.raindancer.core.ui.travel.TravelDoor.of("homes:homes", 10, "Homes", "Your own places.",
+                            (player, parent) -> new HomeListMenu(services, player, parent).open())
+                    .needing(PermissionNodes.USE);
+            de.raindancer.core.ui.travel.TravelDoors.offer(context.plugin(), door);
+            context.closeWith(() -> de.raindancer.core.ui.travel.TravelDoors.withdraw(door));
+        } catch (LinkageError olderCore) {
+            log.info("RainsCore is older than 2.103.0: homes are not on /travel.");
+        }
 
         // The commands were registered during bootstrap, long before any of this existed, and have been
         // answering "not started yet" until now. See HomeCommands.
